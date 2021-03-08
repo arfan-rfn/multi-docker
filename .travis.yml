@@ -1,0 +1,24 @@
+sudo: required
+services:
+  - docker
+
+before_install: 
+  - docker build -t arfanrfn/react-test -f ./client/Dockerfile.dev ./client 
+  # -  add other test here with -
+
+script:
+  - docker run -e CI=true arfanrfn/react-test npm test -- --coverage
+  
+# after success push the docker to the docker hub
+after_success:
+  - docker build -t arfanrfn/multi-client ./client
+  - docker build -t arfanrfn/multi-nginx ./nginx
+  - docker build -t arfanrfn/multi-server ./server
+  - docker build -t arfanrfn/multi-worker ./worker
+  # Log in to docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # take those images and push them to docker hub
+  - docker push arfanrfn/multi-client
+  - docker push arfanrfn/multi-nginx
+  - docker push arfanrfn/multi-server
+  - docker push arfanrfn/multi-worker
