@@ -1,0 +1,33 @@
+{
+    "AWSEBDockerrunVersion": 2,
+    "containerDefinitions": [{
+            "name": "client",
+            "image": "arfanrfn/multi-client",
+            "hostname": "client",
+            "essential": false
+        },
+        {
+            "name": "server",
+            "image": "arfanrfn/multi-server",
+            "hostname": "api",
+            "essential": false
+        },
+        {
+            "name": "worker",
+            "image": "arfanrfn/multi-worker",
+            "hostname": "worker",
+            "essential": false
+        },
+        {
+            "name": "nginx",
+            "image": "arfanrfn/multi-nginx",
+            "hostname": "nginx",
+            "essential": true,
+            "portMappings": [{
+                "hostPort": 80,
+                "containerPort": 80
+            }],
+            "links": ["client", "server"]
+        }
+    ]
+}
